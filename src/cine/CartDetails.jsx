@@ -1,17 +1,29 @@
 import { useContext } from "react";
+import { toast } from "react-toastify";
 import Delete from "../assets/delete.svg";
 import CheckOut from "../assets/icons/checkout.svg";
 import { MovieContext } from "../context";
 import { getImgUrl } from "../utils/cine-utility";
 
 export default function CartDetails({ onClose }) {
-  const { cartData, setCartData } = useContext(MovieContext);
+  const { state, dispatch } = useContext(MovieContext);
+
   function handleDeleteCart(event, cartId) {
+    console.log(cartId);
     event.preventDefault();
-    const filteredData = cartData.filter((item) => {
+    /*const filteredData = state.cartData.filter((item) => {
       return item.id !== cartId;
     });
-    setCartData([...filteredData]);
+    //setCartData([...filteredData]);*/
+    dispatch({
+      type: "REMOVE_FROM_CART",
+      payload: {
+        id: cartId,
+      },
+    });
+    toast.success(`Deleted  from Cart !`, {
+      position: "bottom-right",
+    });
   }
   return (
     <>
@@ -22,10 +34,10 @@ export default function CartDetails({ onClose }) {
               Your Carts
             </h2>
             <div className="space-y-8 lg:space-y-12 max-h-[450px] overflow-auto mb-10 lg:mb-14">
-              {cartData.length === 0 ? (
+              {state.cartData.length === 0 ? (
                 <p className="text-3xl">The Cart is empty.</p>
               ) : (
-                cartData.map((item) => (
+                state.cartData.map((item) => (
                   <div
                     key={item.id}
                     className="grid grid-cols-[1fr_auto] gap-4"
